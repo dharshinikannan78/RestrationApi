@@ -89,6 +89,7 @@ namespace RegistrationApllication.Controllers
         {
             var file = dataModel.FileAttachment.Where(n => n.AttachmentId == id).FirstOrDefault();
             var filepath = Path.Combine(Directory.GetCurrentDirectory(), file.AttachmentPath);
+            //var fileName = file.AttachmentName;
 
             if (!System.IO.File.Exists(filepath))
                 return NotFound();
@@ -103,7 +104,7 @@ namespace RegistrationApllication.Controllers
             memory.Position = 0;
 
 
-            return File(memory, GetContentType(filepath), file.AttachmentName);
+            return File(memory, GetContentType(filepath), filepath);
         }
 
         private string GetContentType(string path)
@@ -113,6 +114,7 @@ namespace RegistrationApllication.Controllers
 
             if (!provider.TryGetContentType(path, out contentType))
             {
+                
                 contentType = "application/octet-stream";
             }
 

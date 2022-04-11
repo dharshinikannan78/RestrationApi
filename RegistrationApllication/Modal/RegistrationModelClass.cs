@@ -30,5 +30,8 @@ namespace RegistrationApllication.Modal
         public string CurrentCity { get; set; }
         public string ApplicantStatus { get; set; }
         public string MessageField { get; set; }
+        public bool IsArchived { get; set; } = false;
+        public string Remarks { get; set; }
+        public string status { get; set; }
     }
 }

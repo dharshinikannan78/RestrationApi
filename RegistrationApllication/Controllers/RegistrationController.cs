@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RegistrationApllication.Data;
 using RegistrationApllication.Modal;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RegistrationApllication.Controllers
@@ -21,23 +22,50 @@ namespace RegistrationApllication.Controllers
         }
 
         [HttpGet("GetAllEmp")]
-        public IActionResult GetCandidateDetails()
+        public IActionResult GetCandidateDetails(string status)
+
         {
-            var user = dataModel.RegistrationDetail.AsQueryable();
-            return Ok(user);
+            List<RegistrationModelClass> EmployeeDetails = new List<RegistrationModelClass>();
+
+            if (status == null)
+            {
+               
+                EmployeeDetails = dataModel.RegistrationDetail.Where(x => x.status == null).Select(x => x).
+                   ToList();
+                return Ok(EmployeeDetails);
+            }
+            else if (status == "archived")
+            {
+                 EmployeeDetails = dataModel.RegistrationDetail.Where(x => x.status == "archived").Select(x => x).
+                   ToList();
+                
+            }
+            else if (status == "active")
+            {
+                EmployeeDetails = dataModel.RegistrationDetail.Where(x => x.status == "active").
+                   Select(x => x).ToList();
+            }
+            else
+            {
+               return NotFound();
+            }
+
+            return Ok(EmployeeDetails);
+           
+          
         }
+      
         [HttpPost]
         public IActionResult RegistrationCandidateForm([FromBody] RegistrationModelClass obj)
         {
-
-
+            obj.ApplicantStatus = "Open";
             dataModel.RegistrationDetail.Add(obj);
             dataModel.SaveChanges();
             return Ok(obj);
         }
 
         [HttpPut]
-        public IActionResult updateStatus([FromBody] RegistrationModelClass obj)
+        public IActionResult updateCandidateDetails([FromBody] RegistrationModelClass obj)
         {
             if (obj == null)
             {
@@ -56,6 +84,7 @@ namespace RegistrationApllication.Controllers
             }
 
         }
+
         [HttpGet("Email")]
         public IActionResult getEmail(string obj)
         {
